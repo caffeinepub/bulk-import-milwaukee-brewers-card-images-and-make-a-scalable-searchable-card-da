@@ -1,0 +1,57 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-an-admin-only-bulk-import-workflow-to-ingest-a-large-milwaukee-brewers-card-dataset-with-images-frontend-add-a-new-page-route-accessible-from-the-ui-e-g-import-that-lets-an-authenticated-admin-upload-1-a-csv-file-containing-card-metadata-at-minimum-id-year-playername-brand-optional-serialnumber-cardnumber-cardseries-notes-isrookiecard-isautographed-team-2-a-zip-or-multiple-files-of-card-images-whose-filenames-map-to-csv-rows-e-g-by-id-provide-a-csv-template-download-and-clear-instructions-english-show-import-progress-counts-created-updated-failed-and-a-downloadable-error-report-for-failed-rows-backend-add-an-admin-restricted-endpoint-to-bulk-upsert-cards-create-if-missing-update-if-exists-and-store-associated-images-using-the-existing-blob-storage-approach-enforce-that-non-admin-users-cannot-perform-bulk-imports-if-team-is-missing-in-the-csv-set-it-to-milwaukee-brewers-during-import",
+      "featureTitle": "Add an admin-only bulk import workflow to ingest a large Milwaukee Brewers card dataset with images.\n\nFrontend:\n- Add a new page/route accessible from the UI (e.g., \"Import\") that lets an authenticated admin upload:\n  1) A CSV file containing card metadata (at minimum: id, year, playerName, brand; optional: serialNumber, cardNumber, cardSeries, notes, isRookieCard, isAutographed, team).\n  2) A ZIP (or multiple files) of card images whose filenames map to CSV rows (e.g., by id).\n- Provide a CSV template download and clear instructions (English).\n- Show import progress, counts (created/updated/failed), and a downloadable error report for failed rows.\n\nBackend:\n- Add an admin-restricted endpoint to bulk upsert cards (create if missing, update if exists) and store associated images using the existing blob storage approach.\n- Enforce that non-admin users cannot perform bulk imports.\n- If team is missing in the CSV, set it to \"Milwaukee Brewers\" during import.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/AdminRouteGuard.tsx",
+        "frontend/src/components/Header.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/ImportPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "authorization@4.0.0",
+        "camera@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-card-catalog-ui-to-behave-as-a-searchable-database-for-milwaukee-brewers-cards-and-to-use-the-new-server-side-pagination-search-replace-the-current-load-everything-then-filter-in-memory-approach-with-react-query-calls-to-the-new-paginated-backend-query-keep-the-existing-filter-controls-search-year-series-brand-player-rookie-autographed-but-apply-them-by-requesting-filtered-pages-from-the-backend-add-a-team-filter-defaulted-to-milwaukee-brewers-and-keep-it-fixed-hidden-unless-explicitly-changed-so-the-app-remains-brewers-focused-add-pagination-controls-next-previous-or-infinite-load-more-and-display-the-total-number-of-results-currently-loaded-plus-a-loading-more-state",
+      "featureTitle": "Update the card catalog UI to behave as a searchable database for Milwaukee Brewers cards and to use the new server-side pagination/search.\n\n- Replace the current \"load everything then filter in-memory\" approach with React Query calls to the new paginated backend query.\n- Keep the existing filter controls (search, year, series, brand, player, rookie, autographed) but apply them by requesting filtered pages from the backend.\n- Add a team filter defaulted to \"Milwaukee Brewers\" and keep it fixed/hidden unless explicitly changed (so the app remains Brewers-focused).\n- Add pagination controls (Next/Previous or infinite load-more) and display the total number of results currently loaded plus a \"Loading more…\" state.",
+      "files": [
+        "frontend/src/components/AddCardDialog.tsx",
+        "frontend/src/components/EditCardDialog.tsx",
+        "frontend/src/components/FilterSidebar.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/CardCatalog.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "authorization@4.0.0",
+        "camera@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

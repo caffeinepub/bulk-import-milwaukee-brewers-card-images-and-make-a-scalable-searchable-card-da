@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a searchable database of Milwaukee Brewers cards including imported card images.",
+  "architectural_notes": [
+    "Need data ingestion pipeline for card images + metadata and a searchable index/database for querying."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-add-an-admin-only-bulk-import-workflow-to-ingest-a-large-milwaukee-brewers-card-dataset-with-images-frontend-add-a-new-page-route-accessible-from-the-ui-e-g-import-that-lets-an-authenticated-admin-upload-1-a-csv-file-containing-card-metadata-at-minimum-id-year-playername-brand-optional-serialnumber-cardnumber-cardseries-notes-isrookiecard-isautographed-team-2-a-zip-or-multiple-files-of-card-images-whose-filenames-map-to-csv-rows-e-g-by-id-provide-a-csv-template-download-and-clear-instructions-english-show-import-progress-counts-created-updated-failed-and-a-downloadable-error-report-for-failed-rows-backend-add-an-admin-restricted-endpoint-to-bulk-upsert-cards-create-if-missing-update-if-exists-and-store-associated-images-using-the-existing-blob-storage-approach-enforce-that-non-admin-users-cannot-perform-bulk-imports-if-team-is-missing-in-the-csv-set-it-to-milwaukee-brewers-during-import",
+      "title": "Add an admin-only bulk import workflow to ingest a large Milwaukee Brewers card dataset with images.\n\nFrontend:\n- Add a new page/route accessible from the UI (e.g., \"Import\") that lets an authenticated admin upload:\n  1) A CSV file containing card metadata (at minimum: id, year, playerName, brand; optional: serialNumber, cardNumber, cardSeries, notes, isRookieCard, isAutographed, team).\n  2) A ZIP (or multiple files) of card images whose filenames map to CSV rows (e.g., by id).\n- Provide a CSV template download and clear instructions (English).\n- Show import progress, counts (created/updated/failed), and a downloadable error report for failed rows.\n\nBackend:\n- Add an admin-restricted endpoint to bulk upsert cards (create if missing, update if exists) and store associated images using the existing blob storage approach.\n- Enforce that non-admin users cannot perform bulk imports.\n- If team is missing in the CSV, set it to \"Milwaukee Brewers\" during import.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-card-catalog-ui-to-behave-as-a-searchable-database-for-milwaukee-brewers-cards-and-to-use-the-new-server-side-pagination-search-replace-the-current-load-everything-then-filter-in-memory-approach-with-react-query-calls-to-the-new-paginated-backend-query-keep-the-existing-filter-controls-search-year-series-brand-player-rookie-autographed-but-apply-them-by-requesting-filtered-pages-from-the-backend-add-a-team-filter-defaulted-to-milwaukee-brewers-and-keep-it-fixed-hidden-unless-explicitly-changed-so-the-app-remains-brewers-focused-add-pagination-controls-next-previous-or-infinite-load-more-and-display-the-total-number-of-results-currently-loaded-plus-a-loading-more-state",
+      "title": "Update the card catalog UI to behave as a searchable database for Milwaukee Brewers cards and to use the new server-side pagination/search.\n\n- Replace the current \"load everything then filter in-memory\" approach with React Query calls to the new paginated backend query.\n- Keep the existing filter controls (search, year, series, brand, player, rookie, autographed) but apply them by requesting filtered pages from the backend.\n- Add a team filter defaulted to \"Milwaukee Brewers\" and keep it fixed/hidden unless explicitly changed (so the app remains Brewers-focused).\n- Add pagination controls (Next/Previous or infinite load-more) and display the total number of results currently loaded plus a \"Loading more…\" state.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Import pictures of all Milwaukee Brewers cards and create a searchable database",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add a backend data field to explicitly label each card’s team and support filtering/searching for a Milwaukee Brewers-only catalog.\n\n- Extend CardMetadata with a required `team : Text` field.\n- Extend CardFilters with optional `team : ?Text`.\n- Update addCard/updateCard/filterCards (and any other relevant query) to store and filter by team.\n- Default team to \"Milwaukee Brewers\" for any existing card records during upgrade so existing data remains readable.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Implement paginated, server-side searchable queries for cards so the database remains usable when many Brewers cards are imported.\n\n- Add a query method that supports pagination (page size + cursor/offset) and accepts CardFilters plus a free-text search term.\n- Return both the page of cards and a next-cursor/hasMore indicator.\n- Ensure the query can filter by year, playerName, brand, cardSeries, isRookieCard, isAutographed, and team, and can also apply a free-text search across playerName/brand/cardSeries (case-insensitive).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Bulk import Milwaukee Brewers card images and make a scalable searchable card database",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

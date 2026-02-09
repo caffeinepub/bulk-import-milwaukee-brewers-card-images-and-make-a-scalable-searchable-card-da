@@ -1,0 +1,81 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Brewers card database: admin bulk import + paginated server-side search",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "summary": "Add an admin-only bulk import page that uploads CSV metadata + mapped images, shows progress/results, and allows downloading a CSV template and error report.",
+      "acceptanceCriteria": [
+        "An admin can import a CSV + images and see newly imported cards appear in the catalog with their images.",
+        "Rows with invalid data are skipped with a clear per-row error message; successful rows still import.",
+        "Non-admin users cannot access or execute the bulk import operation (backend rejects the call).",
+        "If the CSV does not specify team, imported cards are saved with team = \"Milwaukee Brewers\"."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ImportPage.tsx",
+          "operation": "create",
+          "description": "Create an Import page (English UI) that lets an authenticated admin: (1) download a CSV template, (2) upload a CSV, (3) upload a ZIP or multiple image files, (4) validate filename-to-row mapping (e.g., by id), (5) run the bulk import, and (6) display progress + created/updated/failed counts with a downloadable error report. Use the authorization component capabilities (admin role checks and Internet Identity login) to gate access. Use the blob-storage component’s ExternalBlob to convert image bytes into uploadable blobs and to track upload progress where feasible; Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AdminRouteGuard.tsx",
+          "operation": "create",
+          "description": "Add a small route-guard wrapper component for admin-only pages that (a) requires login via Internet Identity and (b) checks admin status, showing an English Access Denied state when not authorized. Use authorization component capabilities for role checks and graceful handling of backend authorization failures; Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add React Query hooks to support the import workflow: a query hook to check admin status (e.g., isCallerAdmin / getCallerUserRole) and a mutation hook to call bulkImportCards with BulkImportCard[] and return the BulkImportResult for rendering counts and error report downloads."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire a new /import route into the TanStack Router and wrap it with the admin guard so the page is navigable but access-controlled."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Add a navigation link/button to the Import page that is only visible to admins (or shows a disabled/hidden state for non-admin users). Keep all user-facing text in English."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Replace in-memory catalog filtering with paginated, server-side search using React Query; default to a hidden Milwaukee Brewers team filter; add pagination UI and loaded/total counts.",
+      "acceptanceCriteria": [
+        "The catalog page can browse results beyond the first page without loading all cards at once.",
+        "Changing any filter triggers a new paginated query rather than filtering an already-loaded full dataset.",
+        "By default, the catalog shows only cards with team \"Milwaukee Brewers\".",
+        "All user-facing text for the updated catalog and pagination is in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a paginated search hook that calls searchCards(filters, searchTerm, pageSize, offset) and supports page loading (Next/Previous or load-more). Ensure the hook accepts year/playerName/brand/cardSeries/isRookieCard/isAutographed/team plus free-text search, and returns total + hasMore so the UI can show loaded count and loading-more state."
+        },
+        {
+          "path": "frontend/src/pages/CardCatalog.tsx",
+          "operation": "modify",
+          "description": "Update the catalog to use the new paginated search hook instead of getAllCards + in-memory filtering. Keep the existing filter controls but make them drive server-side queries. Add a fixed/hidden team filter defaulted to \"Milwaukee Brewers\". Implement pagination controls (e.g., Load more / Previous/Next) and show: (a) total loaded count, (b) total available when provided by the backend result, and (c) an English \"Loading more…\" state."
+        },
+        {
+          "path": "frontend/src/components/FilterSidebar.tsx",
+          "operation": "modify",
+          "description": "Remove the dependency on getAllCards() for building filter options so the page does not load the full dataset. Accept filter option lists (years/brands/series) as props from CardCatalog (computed from currently loaded pages) or gracefully degrade to free-text inputs where needed while keeping the same filter controls and English labels."
+        },
+        {
+          "path": "frontend/src/components/AddCardDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure adding a card supplies a team value (default \"Milwaukee Brewers\") as required by the backend, without adding a visible team control unless explicitly needed. Keep user-facing text in English."
+        },
+        {
+          "path": "frontend/src/components/EditCardDialog.tsx",
+          "operation": "modify",
+          "description": "Ensure editing a card supplies/preserves the team field when updating, defaulting to \"Milwaukee Brewers\" if missing, without exposing a team control by default. Keep user-facing text in English."
+        }
+      ]
+    }
+  ]
+}

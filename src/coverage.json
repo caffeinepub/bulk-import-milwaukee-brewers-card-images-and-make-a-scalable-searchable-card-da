@@ -1,0 +1,101 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-09T07:09:51.305Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Add a backend data field to explicitly label each card’s team and support filtering/searching for a Milwaukee Brewers-only catalog.\n\n- Extend CardMetadata with a required `team : Text` field.\n- Extend CardFilters with optional `team : ?Text`.\n- Update addCard/updateCard/filterCards (and any other relevant query) to store and filter by team.\n- Default team to \"Milwaukee Brewers\" for any existing card records during upgrade so existing data remains readable.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Implement paginated, server-side searchable queries for cards so the database remains usable when many Brewers cards are imported.\n\n- Add a query method that supports pagination (page size + cursor/offset) and accepts CardFilters plus a free-text search term.\n- Return both the page of cards and a next-cursor/hasMore indicator.\n- Ensure the query can filter by year, playerName, brand, cardSeries, isRookieCard, isAutographed, and team, and can also apply a free-text search across playerName/brand/cardSeries (case-insensitive).",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add an admin-only bulk import workflow to ingest a large Milwaukee Brewers card dataset with images.\n\nFrontend:\n- Add a new page/route accessible from the UI (e.g., \"Import\") that lets an authenticated admin upload:\n  1) A CSV file containing card metadata (at minimum: id, year, playerName, brand; optional: serialNumber, cardNumber, cardSeries, notes, isRookieCard, isAutographed, team).\n  2) A ZIP (or multiple files) of card images whose filenames map to CSV rows (e.g., by id).\n- Provide a CSV template download and clear instructions (English).\n- Show import progress, counts (created/updated/failed), and a downloadable error report for failed rows.\n\nBackend:\n- Add an admin-restricted endpoint to bulk upsert cards (create if missing, update if exists) and store associated images using the existing blob storage approach.\n- Enforce that non-admin users cannot perform bulk imports.\n- If team is missing in the CSV, set it to \"Milwaukee Brewers\" during import.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ImportPage.tsx",
+          "frontend/src/components/AdminRouteGuard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Header.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ImportPage.tsx",
+          "frontend/src/components/AdminRouteGuard.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Header.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Update the card catalog UI to behave as a searchable database for Milwaukee Brewers cards and to use the new server-side pagination/search.\n\n- Replace the current \"load everything then filter in-memory\" approach with React Query calls to the new paginated backend query.\n- Keep the existing filter controls (search, year, series, brand, player, rookie, autographed) but apply them by requesting filtered pages from the backend.\n- Add a team filter defaulted to \"Milwaukee Brewers\" and keep it fixed/hidden unless explicitly changed (so the app remains Brewers-focused).\n- Add pagination controls (Next/Previous or infinite load-more) and display the total number of results currently loaded plus a \"Loading more…\" state.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/CardCatalog.tsx",
+          "frontend/src/components/FilterSidebar.tsx",
+          "frontend/src/components/AddCardDialog.tsx",
+          "frontend/src/components/EditCardDialog.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/CardCatalog.tsx",
+          "frontend/src/components/FilterSidebar.tsx",
+          "frontend/src/components/AddCardDialog.tsx",
+          "frontend/src/components/EditCardDialog.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/frontend/canister.yaml",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/AddCardDialog.tsx",
+    "frontend/src/components/AdminRouteGuard.tsx",
+    "frontend/src/components/EditCardDialog.tsx",
+    "frontend/src/components/FilterSidebar.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/CardCatalog.tsx",
+    "frontend/src/pages/ImportPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

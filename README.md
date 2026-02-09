@@ -1,2 +1,3 @@
-# bulk-import-milwaukee-brewers-card-images-and-make-a-scalable-searchable-card-da
-Exported from Caffeine project: Bulk import Milwaukee Brewers card images and make a scalable searchable card database
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

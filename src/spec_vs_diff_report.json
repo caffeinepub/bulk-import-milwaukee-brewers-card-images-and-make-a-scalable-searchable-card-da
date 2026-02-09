@@ -1,0 +1,91 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-09T07:09:51.303Z",
+  "summary": "Diff implements core pieces of team support (including a state migration defaulting team to Milwaukee Brewers), adds a new paginated search hook and updates the catalog page to use it with a hidden Brewers team filter, and adds an admin-guarded Import route/page UI. However, several backend requirements (actual searchCards implementation details, update/filter behavior, and bulk-import endpoint + enforcement) are not directly evidenced in the provided diff excerpts, and some import-specific requirements (ZIP support, robust CSV/error handling details) are only partially evidenced. Diff also includes multiple unrequested UI/feature expansions (recognition enhancements, wishlist, styling/theme changes, etc.).",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Update backend updateCard/filterCards (and any other relevant query) to store and filter by the new required team field.",
+      "reason": "CardMetadata/CardFilters were extended with team and addCard now accepts team, and a migration defaults existing cards to Milwaukee Brewers, but the diff excerpt does not show backend implementations of updateCard and any existing filterCards/other queries being updated to persist/filter by team.",
+      "evidence": [
+        "backend/main.mo (truncated shows types and addCard signature but not updateCard/filter methods)",
+        "backend/migration.mo"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Backend query method implementing server-side pagination + filtering + case-insensitive free-text search across playerName/brand/cardSeries, returning a page and next-cursor/hasMore indicator.",
+      "reason": "Frontend adds a React Query hook that calls actor.searchCards(...) and backend adds PaginatedResult type, but the diff excerpt does not show the backend searchCards method implementation nor evidence that it performs the required combined filtering and case-insensitive free-text search.",
+      "evidence": [
+        "frontend/src/hooks/useQueries.ts (calls actor.searchCards)",
+        "backend/main.mo (defines CardFilters with team and PaginatedResult, but method body not shown due to truncation)"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Backend admin-restricted bulk upsert endpoint to import many cards with images using existing blob storage approach; reject non-admin callers; default team to Milwaukee Brewers when missing; skip invalid rows with per-row errors while continuing.",
+      "reason": "Frontend ImportPage and admin route guard exist, and backend adds BulkImportCard/BulkImportResult types, but the diff excerpt does not show a backend bulk import method implementation or explicit admin enforcement on that endpoint, nor logic for defaulting team during import or per-row error handling.",
+      "evidence": [
+        "frontend/src/pages/ImportPage.tsx (uses useBulkImportCards, CSV parsing, image file selection)",
+        "frontend/src/components/AdminRouteGuard.tsx",
+        "backend/main.mo (BulkImportCard/BulkImportResult type definitions shown; endpoint not shown)"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Import UI must support uploading a ZIP of images (or equivalent ZIP ingestion workflow) whose filenames map to CSV rows.",
+      "reason": "ImportPage shows selection of multiple image files and an imageFilename column, but no evidence of ZIP parsing/handling is present in the truncated ImportPage excerpt.",
+      "evidence": [
+        "frontend/src/pages/ImportPage.tsx (imageFiles: File[]; no ZIP handling shown in excerpt)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Expanded Milwaukee Brewers-themed global styling (OKLCH color system), Tailwind theme extensions, and multiple visual polish changes beyond what was requested for pagination/search/import.",
+      "reason": "BuildRequest does not ask for a global redesign/theme overhaul; it focuses on team field, pagination/search, bulk import workflow, and catalog behavior changes.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/index.css, frontend/tailwind.config.js summaries)"
+      ]
+    },
+    {
+      "description": "Enhanced AI card recognition utilities with multi-stage processing and field-level confidence scoring, plus new recognition UI badges/overlays and behavior changes (e.g., displaying serialNumber instead of cardNumber).",
+      "reason": "BuildRequest does not request changes to recognition accuracy, confidence scoring, or card grid item display logic.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/lib/cardRecognition.ts, frontend/src/components/CardItem.ts summaries)"
+      ]
+    },
+    {
+      "description": "Added/modified Wishlist page and related wishlist UI functionality.",
+      "reason": "Wishlist functionality is not mentioned in the BuildRequest requirements or acceptance criteria.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/pages/WishlistPage.tsx summary)"
+      ]
+    },
+    {
+      "description": "Added ValueTrendsSummary and additional price/history visualization components/changes (e.g., PriceHistoryChart).",
+      "reason": "The BuildRequest does not request new value trend summary or charting features as part of the bulk import/searchable database work.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/components/ValueTrendsSummary.tsx, frontend/src/components/PriceHistoryChart.tsx summaries)"
+      ]
+    }
+  ],
+  "confidence": 0.64,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
+    "frontend/src/components/AddCardDialog.tsx",
+    "frontend/src/components/AdminRouteGuard.tsx",
+    "frontend/src/components/EditCardDialog.tsx",
+    "frontend/src/components/FilterSidebar.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/CardCatalog.tsx",
+    "frontend/src/pages/ImportPage.tsx",
+    "project_state.json"
+  ]
+}
